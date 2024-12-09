@@ -15,9 +15,11 @@ router.post("/api/items", itemActions.add);
 
 /* ************************************************************************* */
 
+import programActions from "./modules/program/programActions";
 import sayActions from "./modules/say/sayActions";
 
 router.get("/", sayActions.sayWelcome);
+router.get("/api/programs", programActions.browse);
 
 /* ************************************************************************* */
 
