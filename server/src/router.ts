@@ -15,4 +15,10 @@ router.post("/api/items", itemActions.add);
 
 /* ************************************************************************* */
 
+import sayActions from "./modules/say/sayActions";
+
+router.get("/", sayActions.sayWelcome);
+
+/* ************************************************************************* */
+
 export default router;
