@@ -29,6 +29,25 @@ const programs = [
 // Declare the action
 
 import type { RequestHandler } from "express";
+import Joi from "joi";
+
+const serieSchema = Joi.object({
+  title: Joi.string().min(3).max(255).required(),
+  synopsis: Joi.string().required(),
+  poster: Joi.string().uri().max(255).required(),
+  country: Joi.string().max(255).required(),
+  year: Joi.number().integer().min(1900).max(new Date().getFullYear()),
+});
+
+const validate: RequestHandler = (req, res, next) => {
+  const { error } = serieSchema.validate(req.body, { abortEarly: false });
+
+  if (error == null) {
+    next();
+  } else {
+    res.status(400).json({ validationErrors: error.details });
+  }
+};
 
 const browse: RequestHandler = async (req, res) => {
   const programsFromDB = await programRepository.readAll();
@@ -92,6 +111,7 @@ const edit: RequestHandler = async (req, res, next) => {
 
 const add: RequestHandler = async (req, res, next) => {
   try {
+    console.info("Requête reçue:", req.body);
     // Extract the program data from the request body
     const newProgram = {
       title: req.body.title,
@@ -129,4 +149,4 @@ const destroy: RequestHandler = async (req, res, next) => {
 
 // Export it to import it somewhere else
 
-export default { browse, read, edit, add, destroy };
+export default { browse, read, edit, add, destroy, validate };

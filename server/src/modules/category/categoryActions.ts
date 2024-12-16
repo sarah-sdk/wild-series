@@ -5,6 +5,21 @@ import categoryRepository from "./categoryRepository";
 // Declare the actions
 
 import type { RequestHandler } from "express";
+import Joi from "joi";
+
+const categorySchema = Joi.object({
+  name: Joi.string().min(3).max(255).required(),
+});
+
+const validate: RequestHandler = (req, res, next) => {
+  const { error } = categorySchema.validate(req.body, { abortEarly: false });
+
+  if (error == null) {
+    next();
+  } else {
+    res.status(400).json({ validationErrors: error.details });
+  }
+};
 
 const browse: RequestHandler = async (req, res, next) => {
   const categoriesFromDB = await categoryRepository.readAll();
@@ -97,4 +112,4 @@ const destroy: RequestHandler = async (req, res, next) => {
 
 // Export them to import them somewhere else
 
-export default { browse, read, edit, add, destroy };
+export default { browse, read, edit, add, destroy, validate };
