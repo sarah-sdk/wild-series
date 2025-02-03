@@ -31,6 +31,17 @@ const browse: RequestHandler = (req, res) => {
   res.json(programs);
 };
 
+const read: RequestHandler = (req, res) => {
+  const parsedId = Number.parseInt(req.params.id);
+
+  const program = programs.find((p) => p.id === parsedId);
+
+  if (program != null) {
+    res.json(program);
+  } else {
+    res.sendStatus(404);
+  }
+};
 // Export it to import it somewhere else
 
-export default { browse };
+export default { browse, read };
